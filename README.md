@@ -1,5 +1,7 @@
 # Unicorn Finance
 
+> Test verification: Repository access and PR workflow confirmed.
+
 We have created Unicorn Finance as a sample application showcasing the
 capabilities of our J.P. Morgan core external APIs.
 We hit a number of J.P. Morgan

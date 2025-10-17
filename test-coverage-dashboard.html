@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unicorn Finance - Test Coverage Dashboard</title>
+    <style>
+        :root {
+            /* JPMorgan Chase Brand Colors */
+            --jpmc-blue: #117ACA;
+            --jpmc-dark-blue: #003366;
+            --jpmc-light-blue: #5B9BD5;
+            --jpmc-navy: #0B2545;
+            --jpmc-gray: #6B7280;
+            --jpmc-light-gray: #F3F4F6;
+            --jpmc-success: #10B981;
+            --jpmc-warning: #F59E0B;
+            --jpmc-danger: #EF4444;
+            --jpmc-white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+            background: linear-gradient(135deg, var(--jpmc-light-gray) 0%, var(--jpmc-white) 100%);
+            color: var(--jpmc-navy);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--jpmc-dark-blue) 0%, var(--jpmc-blue) 100%);
+            color: var(--jpmc-white);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .header .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .ai-summary {
+            background: var(--jpmc-white);
+            border-left: 4px solid var(--jpmc-blue);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .ai-summary h2 {
+            color: var(--jpmc-blue);
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ai-summary p {
+            color: var(--jpmc-gray);
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .scorecard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: var(--jpmc-white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: var(--jpmc-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .metric-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-subtitle {
+            font-size: 0.875rem;
+            color: var(--jpmc-gray);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--jpmc-light-gray);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.75rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .priority-section {
+            background: var(--jpmc-white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .priority-section h2 {
+            color: var(--jpmc-dark-blue);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .file-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .file-table thead {
+            background: var(--jpmc-light-gray);
+        }
+
+        .file-table th {
+            padding: 1rem;
+            text-align: left;
+            font-size: 0.875rem;
+            color: var(--jpmc-navy);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .file-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--jpmc-light-gray);
+        }
+
+        .file-table tbody tr:hover {
+            background: #F9FAFB;
+        }
+
+        .priority-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-critical {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .priority-high {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .priority-medium {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        .priority-low {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-tested {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status-untested {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .coverage-bar {
+            width: 100px;
+            height: 6px;
+            background: var(--jpmc-light-gray);
+            border-radius: 3px;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .coverage-fill {
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        .icon-ai {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: var(--jpmc-blue);
+            border-radius: 50%;
+            color: white;
+            text-align: center;
+            line-height: 24px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .icon-target {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: var(--jpmc-blue);
+            border-radius: 50%;
+            color: white;
+            text-align: center;
+            line-height: 24px;
+            font-size: 14px;
+        }
+
+        .footer {
+            text-align: center;
+            color: var(--jpmc-gray);
+            font-size: 0.875rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--jpmc-light-gray);
+        }
+
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .trend-up {
+            color: var(--jpmc-success);
+        }
+
+        .trend-down {
+            color: var(--jpmc-danger);
+        }
+
+        .file-name {
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            color: var(--jpmc-navy);
+        }
+
+        .file-type {
+            font-size: 0.75rem;
+            color: var(--jpmc-gray);
+            margin-left: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🦄 Unicorn Finance - Test Coverage Dashboard</h1>
+            <p class="subtitle">Real-time monitoring of code quality and test coverage metrics</p>
+        </div>
+
+        <!-- AI Summary -->
+        <div class="ai-summary">
+            <h2><span class="icon-ai">AI</span> Executive Summary</h2>
+            <p>
+                <strong>Current Status:</strong> Testing infrastructure successfully established for backend services. The digitalSignature.js module, 
+                a critical security component handling JWT authentication for payment processing, now has 100% test coverage with 9 comprehensive test cases. 
+                Overall backend coverage stands at 7.52%, with significant opportunities in app.js (211 lines) and grabSecret.js (20 lines). 
+                <strong>Recommendation:</strong> Prioritize testing the proxy configuration logic in app.js next, as it affects all API routing and authentication flows. 
+                Target 40% backend coverage within the next sprint by completing Phase 1 of the coverage plan.
+            </p>
+        </div>
+
+        <!-- Scorecard -->
+        <div class="scorecard">
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-label">Overall Coverage</span>
+                    <div class="metric-icon" style="background: linear-gradient(135deg, var(--jpmc-blue), var(--jpmc-light-blue));">
+                        📊
+                    </div>
+                </div>
+                <div class="metric-value" style="color: var(--jpmc-warning);">7.52%</div>
+                <div class="metric-subtitle">Backend Services</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 7.52%; background: var(--jpmc-warning);"></div>
+                </div>
+                <div class="trend-indicator trend-up" style="margin-top: 0.5rem;">
+                    ▲ +7.52% from baseline
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-label">Files Tested</span>
+                    <div class="metric-icon" style="background: linear-gradient(135deg, var(--jpmc-success), #34D399);">
+                        ✅
+                    </div>
+                </div>
+                <div class="metric-value" style="color: var(--jpmc-success);">1 / 3</div>
+                <div class="metric-subtitle">Critical Backend Files</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 33.33%; background: var(--jpmc-success);"></div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-label">Test Cases</span>
+                    <div class="metric-icon" style="background: linear-gradient(135deg, var(--jpmc-blue), var(--jpmc-light-blue));">
+                        🧪
+                    </div>
+                </div>
+                <div class="metric-value" style="color: var(--jpmc-blue);">9</div>
+                <div class="metric-subtitle">Total Passing Tests</div>
+                <div class="trend-indicator trend-up" style="margin-top: 0.5rem;">
+                    ▲ +9 from baseline
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-label">Target Progress</span>
+                    <div class="metric-icon" style="background: linear-gradient(135deg, var(--jpmc-dark-blue), var(--jpmc-blue));">
+                        🎯
+                    </div>
+                </div>
+                <div class="metric-value" style="color: var(--jpmc-dark-blue);">8.4%</div>
+                <div class="metric-subtitle">Progress to 90% Goal</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 8.4%; background: var(--jpmc-dark-blue);"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Priority Files Section -->
+        <div class="priority-section">
+            <h2><span class="icon-target">🎯</span> Prioritized Files for Testing</h2>
+            <table class="file-table">
+                <thead>
+                    <tr>
+                        <th>Priority</th>
+                        <th>File</th>
+                        <th>Status</th>
+                        <th>Lines</th>
+                        <th>Coverage</th>
+                        <th>Impact</th>
+                        <th>Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Completed -->
+                    <tr>
+                        <td><span class="priority-badge priority-critical">CRITICAL</span></td>
+                        <td>
+                            <div class="file-name">digitalSignature.js</div>
+                            <span class="file-type">Backend / Security</span>
+                        </td>
+                        <td><span class="status-badge status-tested">✓ TESTED</span></td>
+                        <td>14 LOC</td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div class="coverage-bar">
+                                    <div class="coverage-fill" style="width: 100%; background: var(--jpmc-success);"></div>
+                                </div>
+                                <span style="font-weight: 600; color: var(--jpmc-success);">100%</span>
+                            </div>
+                        </td>
+                        <td>🔴 High</td>
+                        <td>JWT signing for payment auth</td>
+                    </tr>
+
+                    <!-- High Priority - Next -->
+                    <tr style="background: #FFF7ED;">
+                        <td><span class="priority-badge priority-critical">CRITICAL</span></td>
+                        <td>
+                            <div class="file-name">app.js</div>
+                            <span class="file-type">Backend / Core</span>
+                        </td>
+                        <td><span class="status-badge status-untested">⚠ UNTESTED</span></td>
+                        <td>211 LOC</td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div class="coverage-bar">
+                                    <div class="coverage-fill" style="width: 0%; background: var(--jpmc-danger);"></div>
+                                </div>
+                                <span style="font-weight: 600; color: var(--jpmc-danger);">0%</span>
+                            </div>
+                        </td>
+                        <td>🔴 High</td>
+                        <td>Proxy routing, SSL, API gateway</td>
+                    </tr>
+
+                    <tr>
+                        <td><span class="priority-badge priority-critical">CRITICAL</span></td>
+                        <td>
+                            <div class="file-name">grabSecret.js</div>
+                            <span class="file-type">Backend / Security</span>
+                        </td>
+                        <td><span class="status-badge status-untested">⚠ UNTESTED</span></td>
+                        <td>20 LOC</td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div class="coverage-bar">
+                                    <div class="coverage-fill" style="width: 0%; background: var(--jpmc-danger);"></div>
+                                </div>
+                                <span style="font-weight: 600; color: var(--jpmc-danger);">0%</span>
+                            </div>
+                        </td>
+                        <td>🔴 High</td>
+                        <td>AWS Secrets Manager integration</td>
+                    </tr>
+
+                    <!-- Frontend - High Priority -->
+                    <tr>
+                        <td><span class="priority-badge priority-high">HIGH</span></td>
+                        <td>
+                            <div class="file-name">SubmitValidationServicesRequest.ts</div>
+                            <span class="file-type">Frontend / API</span>
+                        </td>
+                        <td><span class="status-badge status-untested">⚠ UNTESTED</span></td>
+                        <td>69 LOC</td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div class="coverage-bar">
+                                    <div class="coverage-fill" style="width: 0%; background: var(--jpmc-danger);"></div>
+                                </div>
+                                <span style="font-weight: 600; color: var(--jpmc-danger);">0%</span>
+                            </div>
+                        </td>
+                        <td>🟡 Medium</td>
+                        <td>Account validation business logic</td>
+                    </tr>
+
+                    <tr>
+                        <td><span class="priority-badge priority-high">HIGH</span></td>
+                        <td>
+                            <div class="file-name">SubmitGlobalPaymentsRequest.tsx</div>
+                            <span class="file-type">Frontend / API</span>
+                        </td>
+                        <td><span class="status-badge status-untested">⚠ UNTESTED</span></td>
+                        <td>81 LOC</td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div class="coverage-bar">
+                                    <div class="coverage-fill" style="width: 0%; background: var(--jpmc-danger);"></div>
+                                </div>
+                                <span style="font-weight: 600; color: var(--jpmc-danger);">0%</span>
+                            </div>
+                        </td>
+                        <td>🟡 Medium</td>
+                        <td>Payment submission logic</td>
+                    </tr>
+
+                    <tr>
+                        <td><span class="priority-badge priority-high">HIGH</span></td>
+                        <td>
+                            <div class="file-name">GlobalPaymentsConfig.ts</div>
+                            <span class="file-type">Frontend / Config</span>
+                        </td>
+                        <td><span class="status-badge status-untested">⚠ UNTESTED</span></td>
+                        <td>128 LOC</td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div class="coverage-bar">
+                                    <div class="coverage-fill" style="width: 0%; background: var(--jpmc-danger);"></div>
+                                </div>
+                                <span style="font-weight: 600; color: var(--jpmc-danger);">0%</span>
+                            </div>
+                        </td>
+                        <td>🟡 Medium</td>
+                        <td>Payment type configuration</td>
+                    </tr>
+
+                    <tr>
+                        <td><span class="priority-badge priority-medium">MEDIUM</span></td>
+                        <td>
+                            <div class="file-name">EnvContext.tsx</div>
+                            <span class="file-type">Frontend / Context</span>
+                        </td>
+                        <td><span class="status-badge status-untested">⚠ UNTESTED</span></td>
+                        <td>68 LOC</td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div class="coverage-bar">
+                                    <div class="coverage-fill" style="width: 0%; background: var(--jpmc-danger);"></div>
+                                </div>
+                                <span style="font-weight: 600; color: var(--jpmc-danger);">0%</span>
+                            </div>
+                        </td>
+                        <td>🟡 Medium</td>
+                        <td>Environment state management</td>
+                    </tr>
+
+                    <tr>
+                        <td><span class="priority-badge priority-medium">MEDIUM</span></td>
+                        <td>
+                            <div class="file-name">RequestPreviewContext.tsx</div>
+                            <span class="file-type">Frontend / Context</span>
+                        </td>
+                        <td><span class="status-badge status-untested">⚠ UNTESTED</span></td>
+                        <td>71 LOC</td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div class="coverage-bar">
+                                    <div class="coverage-fill" style="width: 0%; background: var(--jpmc-danger);"></div>
+                                </div>
+                                <span style="font-weight: 600; color: var(--jpmc-danger);">0%</span>
+                            </div>
+                        </td>
+                        <td>🟢 Low</td>
+                        <td>Preview drawer state</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Last Updated:</strong> October 17, 2025 | <strong>Sprint Goal:</strong> 40% Backend Coverage by End of Phase 1</p>
+            <p style="margin-top: 0.5rem; color: var(--jpmc-blue);">Generated by Devin AI • <a href="https://app.devin.ai/sessions/70311d15be844c0b91e05a764bf550ac" style="color: var(--jpmc-blue);">View Session</a></p>
+        </div>
+    </div>
+</body>
+</html>

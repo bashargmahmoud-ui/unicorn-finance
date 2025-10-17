@@ -14,10 +14,16 @@
         "jose": "^6.0.11",
         "nodemon": "^3.1.10"
     },
+    "devDependencies": {
+        "jest": "^29.7.0",
+        "semver": "^7.0.0"
+    },
     "scripts": {
         "start": "nodemon app.js",
         "start:local": "NODE_ENV='development' nodemon app.local.js",
-        "build": "zip archive.zip . -r -x \"/certs/**\" -x \"*/.DS_Store\" -x \"app.local.js\" -x \"/mock-server/**\""
+        "build": "zip archive.zip . -r -x \"/certs/**\" -x \"*/.DS_Store\" -x \"app.local.js\" -x \"/mock-server/**\"",
+        "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+        "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage"
     },
     "license": "Apache-2.0",
     "resolutions": {
